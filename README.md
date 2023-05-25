@@ -68,3 +68,4 @@ All requests were verified using Postman for Windows version 10.14.5.
 I implemented Swagger to the API for visual effect and check of the requests functionality.
 To do this, I had to downgrade spring-boot to 2.2.6.RELEASE. With this version, swagger 2.8.0 works stably.
 With the latest version, swagger , unfortunatelly has issues. I tried to resolve them but did not have enough time.
+Java version  - 11
