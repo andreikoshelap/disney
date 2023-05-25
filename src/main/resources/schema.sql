@@ -1,34 +1,35 @@
-create table site
+create table if not exists site
 (
     id bigint primary key auto_increment,
     name varchar(255),
     description varchar(255)
 );
 
-create table component
+create table if not exists component
 (
     id bigint primary key auto_increment,
     name varchar(255),
-    component_type varchar(255),
+    component_type varchar(20),
     site_id bigint references site(id),
     max_visitors int
 );
 
-create table visitor
+create table  if not exists visitor
 (
     id bigint primary key auto_increment,
     name varchar(255),
     age int
 );
 
-create table ticket
+create table if not exists ticket
 (
     id bigint primary key auto_increment,
     ticket_number varchar(255),
     component_id bigint references component (id),
     visitor_id bigint references visitor (id),
     time_purchase timestamp,
-    time_end timestamp
+    time_end timestamp,
+    state varchar(20)
 );
 
 create table if not exists acl_sid (
@@ -70,15 +71,24 @@ create table if not exists acl_object_identity (
   unique key unique_uk_3 (object_id_class,object_id_identity)
 );
 
+create table if not exists user (
+  id bigint(20) not null auto_increment,
+  username varchar(255) not null,
+  password varchar(255) not null,
+  first_name varchar(255) ,
+  sur_name varchar(255),
+  account_non_expired boolean,
+  account_non_locked boolean,
+  credentials_non_expired boolean,
+  enabled boolean,
+  primary key (id)
+);
 alter table acl_entry
     add foreign key (acl_object_identity) references acl_object_identity(id);
 
 alter table acl_entry
     add foreign key (sid) references acl_sid(id);
 
---
--- constraints for table acl_object_identity
---
 alter table acl_object_identity
     add foreign key (parent_object) references acl_object_identity (id);
 
@@ -87,5 +97,6 @@ alter table acl_object_identity
 
 alter table acl_object_identity
     add foreign key (owner_sid) references acl_sid (id);
+
 
 

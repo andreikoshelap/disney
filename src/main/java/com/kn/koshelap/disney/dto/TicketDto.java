@@ -18,5 +18,6 @@ public class TicketDto {
     private String ticketNumber;
     private Timestamp timePurchase;
     private Timestamp timeEnd;
+    private String state;
 
 }

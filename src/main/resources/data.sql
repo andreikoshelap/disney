@@ -24,12 +24,12 @@ values ('John Dow', 13),
 ('Ivan Dubov', 12),
 ('Sebastien Col', 10);
 
-insert into ticket(ticket_number, component_id, visitor_id, time_purchase, time_end)
-values ('a57136cc-f92a-11ed-be56-0242ac120002', 1, 1, '2023-05-05 13.59.59', '2023-05-05 14.59.59'),
-('ad22e546-f92a-11ed-be56-0242ac120002', 2, 2, '2023-05-05 13.20.59', '2023-05-05 14.20.59'),
-('b4e498a6-f92a-11ed-be56-0242ac120002', 3, 3, '2023-05-05 13.15.00', '2023-05-05 14.15.00'),
-('ba1a5978-f92a-11ed-be56-0242ac120002', 1, 4, '2023-05-04 13.15.00', '2023-05-04 14.15.00'),
-('c4feb866-f92a-11ed-be56-0242ac120002', 1, 4, '2023-05-05 14.10.00', '2023-05-05 15.10.00');
+insert into ticket(ticket_number, component_id, visitor_id, time_purchase, time_end, state)
+values ('a57136cc-f92a-11ed-be56-0242ac120002', 1, 1, '2023-05-05 13.59.59', '2023-05-05 14.59.59', 'ACTIVE'),
+('ad22e546-f92a-11ed-be56-0242ac120002', 2, 2, '2023-05-05 13.20.59', '2023-05-05 14.20.59', 'ACTIVE'),
+('b4e498a6-f92a-11ed-be56-0242ac120002', 3, 3, '2023-05-05 13.15.00', '2023-05-05 14.15.00', 'ACTIVE'),
+('ba1a5978-f92a-11ed-be56-0242ac120002', 1, 4, '2023-05-04 13.15.00', '2023-05-04 14.15.00', 'ACTIVE'),
+('c4feb866-f92a-11ed-be56-0242ac120002', 1, 4, '2023-05-05 14.10.00', '2023-05-05 15.10.00', 'ACTIVE');
 
 insert into acl_sid (id, principal, sid)
 values    (1, 1, 'admin'),
@@ -52,6 +52,10 @@ values    (1, 1, 1, 1, 1, 1, 1, 1),
 (5, 2, 2, 3, 1, 1, 1, 1),
 (6, 3, 1, 3, 1, 1, 1, 1),
 (7, 3, 2, 3, 2, 1, 1, 1);
+
+insert into user (id, username, password, first_name, sur_name,
+                  account_non_expired, account_non_locked, credentials_non_expired, enabled)
+values (1, 'admin', 'password', '', '', true, false, true, true);
 
 
 

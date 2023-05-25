@@ -1,6 +1,8 @@
 package com.kn.koshelap.disney.controller;
 
-import static java.lang.String.format;
+import static com.kn.koshelap.disney.domain.enums.StateEnum.ACTIVE;
+import static com.kn.koshelap.disney.domain.enums.StateEnum.CANCELED;
+import static com.kn.koshelap.disney.domain.enums.StateEnum.QUEUE;
 import static java.sql.Timestamp.valueOf;
 
 import java.time.LocalDateTime;
@@ -57,8 +59,6 @@ public class TicketController {
     @Autowired
     SiteRepository siteRepository;
 
-
-
     @PostMapping("/ticket/search")
     public ResponseEntity<?> find(@RequestBody TicketSearchDto searchDto) {
         return new ResponseEntity<>(service.find(searchDto), HttpStatus.OK);
@@ -72,9 +72,9 @@ public class TicketController {
     @PutMapping("/ticket/component/{id}")
     public ResponseEntity<Ticket> addTicketToComponent(@PathVariable("id") Long id, @RequestBody VisitorDto visitorDto) {
         Optional<Component> component = componentRepository.findById(id);
-        Optional<Visitor> visitor = visitorRepository.findByName(format("%s %s", visitorDto.getFirstName(), visitorDto.getLastName()));
+        Optional<Visitor> visitor = visitorRepository.findByName(visitorDto.getName());
         Visitor newVisitor;
-        if (visitor.isEmpty()) {
+        if (!visitor.isPresent()) {
             newVisitor = visitorService.save(visitorDto);
         } else {
             newVisitor = visitor.get();
@@ -86,11 +86,11 @@ public class TicketController {
             ticket.setTicketNumber(UUID.randomUUID().toString());
             ticket.setTimePurchase(valueOf(LocalDateTime.now()));
             ticket.setTimeEnd(valueOf(LocalDateTime.now().plusHours(1)));
+            ticket.setState(QUEUE);
             ticketRepository.save(ticket);
             return new ResponseEntity<>(ticket, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/ticket/site/{name}")
@@ -120,4 +120,67 @@ public class TicketController {
         }
     }
 
+    @PostMapping("/ticket/activate/{id}")
+    public ResponseEntity<?> activateTicket(@PathVariable("id") Long id) {
+        Optional<Ticket> ticket = ticketRepository.findById(id);
+        if (ticket.isPresent() && QUEUE.equals(ticket.get().getState())) {
+            ticket.get().setState(ACTIVE);
+            ticketRepository.save(ticket.get());
+            return new ResponseEntity<>(ticket, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/ticket/cancel/{id}")
+    public ResponseEntity<?> cancelTicket(@PathVariable("id") Long id) {
+        Optional<Ticket> ticket = ticketRepository.findById(id);
+        if (ticket.isPresent() && QUEUE.equals(ticket.get().getState())) {
+            ticket.get().setState(CANCELED);
+            ticketRepository.save(ticket.get());
+            return new ResponseEntity<>(ticket, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/site/util/{id}")
+    public ResponseEntity<?> getSiteUtilization(@PathVariable("id") Long id) {
+        List<Component> components = getComponentsBySiteId(id);
+        if (!components.isEmpty()) {
+            int maxSiteVisitorCount = components.stream().map(component -> component.getMaxVisitors()).reduce(0, Integer::sum);
+
+            List<Ticket> tickets = new ArrayList<>();
+            components.forEach(component -> tickets.addAll(ticketRepository.findActiveTicketForSiteParamsNative(component.getId())));
+            double percentUtilisation = calculatePercentage(tickets.size(), maxSiteVisitorCount);
+
+            return new ResponseEntity<>(percentUtilisation, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/component/util/{id}")
+    public ResponseEntity<?> getComponentUtilization(@PathVariable("id") Long id) {
+
+        Optional<Component> component = componentRepository.findById(id);
+        if (component.isPresent()) {
+            int maxSiteVisitorCount = component.map(Component::getMaxVisitors).orElse(0);
+            List<Ticket> tickets = new ArrayList<>();
+            tickets.addAll(ticketRepository.findActiveTicketForSiteParamsNative(component.get().getId()));
+            double percentUtilisation = calculatePercentage(tickets.size(), maxSiteVisitorCount);
+
+            return new ResponseEntity<>(percentUtilisation, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private List<Component> getComponentsBySiteId(Long id) {
+        List<Component> components = new ArrayList<>();
+        siteRepository.findById(id).ifPresent(site -> components.addAll(componentRepository.findActiveComponentBySiteId(site.getId())));
+        return components;
+    }
+
+    private double calculatePercentage(double obtained, double total) {
+        return obtained * 100 / total;
+    }
 }

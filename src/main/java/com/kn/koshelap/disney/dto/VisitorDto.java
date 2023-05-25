@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class VisitorDto {
 
-    private String firstName;
-    private String lastName;
+    private String name;
     private Integer age;
 }
