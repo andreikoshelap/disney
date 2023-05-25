@@ -50,7 +50,6 @@ public class ComponentController {
         return new ResponseEntity<>(service.save(componentDts), HttpStatus.OK);
     }
 
-
     @PutMapping("/site/component/{id}")
     public ResponseEntity<Site> addComponentToSite(@PathVariable("id") Long id, @RequestBody SiteDto siteDto) {
         Optional<Component> component = componentRepository.findById(id);
@@ -64,7 +63,6 @@ public class ComponentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 
     @GetMapping("/component/all")
     public ResponseEntity<?> findAll() {

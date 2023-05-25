@@ -32,7 +32,6 @@ import com.kn.koshelap.disney.dto.search.TicketSearchDto;
 import com.kn.koshelap.disney.repository.ComponentRepository;
 import com.kn.koshelap.disney.repository.SiteRepository;
 import com.kn.koshelap.disney.repository.TicketRepository;
-import com.kn.koshelap.disney.repository.TicketRepositoryCustom;
 import com.kn.koshelap.disney.repository.VisitorRepository;
 import com.kn.koshelap.disney.service.ComponentService;
 import com.kn.koshelap.disney.service.TicketService;
@@ -54,8 +53,6 @@ public class TicketController {
     VisitorRepository visitorRepository;
     @Autowired
     TicketRepository ticketRepository;
-    @Autowired
-    TicketRepositoryCustom customRepository;
     @Autowired
     SiteRepository siteRepository;
 
