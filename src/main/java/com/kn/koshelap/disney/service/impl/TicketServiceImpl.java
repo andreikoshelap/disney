@@ -13,7 +13,6 @@ import com.kn.koshelap.disney.service.TicketService;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-
     private final TicketRepository repository;
     private final MappingService mapper;
 

@@ -9,7 +9,6 @@ import ma.glasnost.orika.impl.ConfigurableMapper;
 
 @Service
 public class MappingService extends ConfigurableMapper {
-
     private MapperFactory factory;
 
     public MappingService() {

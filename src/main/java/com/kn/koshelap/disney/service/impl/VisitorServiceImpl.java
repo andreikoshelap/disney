@@ -16,7 +16,6 @@ import com.kn.koshelap.disney.dto.VisitorDto;
 import com.kn.koshelap.disney.repository.ComponentRepository;
 import com.kn.koshelap.disney.repository.SiteRepository;
 import com.kn.koshelap.disney.repository.TicketRepository;
-import com.kn.koshelap.disney.repository.TicketRepositoryCustom;
 import com.kn.koshelap.disney.repository.VisitorRepository;
 import com.kn.koshelap.disney.service.VisitorService;
 
@@ -29,12 +28,9 @@ public class VisitorServiceImpl implements VisitorService {
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
-    TicketRepositoryCustom customRepository;
-    @Autowired
     SiteRepository siteRepository;
     @Autowired
     private  MappingService mapper;
-
 
 
     @Override
